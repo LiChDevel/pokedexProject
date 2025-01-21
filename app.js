@@ -1,8 +1,10 @@
 let URL = "https://pokeapi.co/api/v2/pokemon/"
+
 let container = document.querySelector(".container");
 let measures = document.querySelector(".measures");
+const typeButtons = document.querySelectorAll(".btn-nav");
 
-
+//Muestra todos los pkmn
 async function fetchPokemon(){
     for (let i = 1; i <= 151; i++){
         const response = await fetch(URL + i);
@@ -10,6 +12,8 @@ async function fetchPokemon(){
         showPokemon(data);
     }
 }
+
+//Muestra todos los pkmn con atributo normal
 
 
 function showPokemon(pokemon) {
@@ -61,7 +65,6 @@ function showPokemon(pokemon) {
         </div>
     `;
     container.append(pokemonCard);
-    
 }
 
 function idFormater(idNumber) {
@@ -73,4 +76,34 @@ function idFormater(idNumber) {
     return idNumber;
 }
 
-fetchPokemon();
+fetchPokemon(); // Ejecucion inicial para mostrar todos los Pkmn
+
+typeButtons.forEach(button => {
+    button.addEventListener("click", (e) => {
+        container.innerHTML = "";
+        const botonId = e.currentTarget.id;
+        if(botonId == "show-all"){
+            fetchPokemon();
+            return;
+        }
+
+        async function fetchPokemonByType(){
+            for (let i = 1; i <= 151; i++){
+
+                const response = await fetch(URL + i);
+                const data = await response.json();
+                data.types.forEach(type => {
+                    //console.log(type.type.name);
+                    if(type.type.name == botonId){
+                        showPokemon(data);
+                    }
+                  });
+                //
+                
+            }
+
+        }
+        fetchPokemonByType();
+    })
+    
+})
